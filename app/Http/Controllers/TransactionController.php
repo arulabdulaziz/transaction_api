@@ -18,6 +18,17 @@ class TransactionController extends Controller
     // public function getData(){
     //     return "getDAta";
     // }
+    function responseUndefinedData()
+    {
+        $result['message'] = "Transaction not Found";
+        $result['messageId'] = "Transaksi tidak ditemukan";
+        return Response::jsonErrorSimple(
+            Controller::BAD_REQUEST_STATUS,
+            Controller::INCORRECT_DATA,
+            $result['message'],
+            $result['messageId']
+        );
+    }
     public function index(Request $request)
     {
         $searchItem = $request->search_item;
@@ -68,9 +79,13 @@ class TransactionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request,$id)
     {
-        //
+        $data = Transaction::find($id);
+        if (!$data) {
+            return $this->responseUndefinedData();
+        }
+        return Response::jsonSuccessSimple(true, $data);
     }
 
     /**
@@ -93,7 +108,26 @@ class TransactionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $transaction = Transaction::find($id);
+        if (!$transaction) {
+            return $this->responseUndefinedData();
+        }
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'type' => 'required|string|in:expense,revenue',
+            'amount' => 'required|numeric',
+            'time' => 'required|date_format:Y-m-d H:i:s',
+
+        ], Utility::getErrorMessage());
+        if ($validator->fails()) {
+            return Response::jsonErrorValidation($validator);
+        }
+        $transaction->title = $request->title;
+        $transaction->amount = $request->amount;
+        $transaction->type = $request->type;
+        $transaction->time = $request->time;
+        $transaction->save();
+        return Response::jsonSuccessSimple(true, $transaction);
     }
 
     /**
@@ -104,6 +138,11 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $transaction = Transaction::find($id);
+        if (!$transaction) {
+            return $this->responseUndefinedData();
+        }
+        $transaction->delete();
+        return Response::jsonSuccessSimple(true, $transaction);
     }
 }
