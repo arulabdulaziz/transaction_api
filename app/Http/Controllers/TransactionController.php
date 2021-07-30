@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use App\Helper\Response;
+use App\Utility\Utility;
+use Illuminate\Support\Facades\Validator;
+
 class TransactionController extends Controller
 {
     /**
@@ -17,9 +21,9 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         $searchItem = $request->search_item;
-        $itemPerPage= $request->item_per_page;
-        $transaction = Transaction::where("title", "like", "%".$searchItem."%")->paginate($itemPerPage);
-        return response()->json($transaction, 200);
+        $itemPerPage = $request->item_per_page;
+        $transaction = Transaction::where("title", "like", "%" . $searchItem . "%")->paginate($itemPerPage, ["id", "title", "time", "type", "amount"]);
+        return Response::jsonSuccessSimple(true, $transaction);
     }
 
     /**
@@ -27,9 +31,8 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
     }
 
     /**
@@ -40,7 +43,23 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|string',
+            'type' => 'required|string|in:expense,revenue',
+            'amount' => 'required|numeric',
+            'time' => 'required|date_format:Y-m-d H:i:s',
+
+        ], Utility::getErrorMessage());
+        if ($validator->fails()) {
+            return Response::jsonErrorValidation($validator);
+        }
+        $transaction = new Transaction;
+        $transaction->title = $request->title;
+        $transaction->amount = $request->amount;
+        $transaction->type = $request->type;
+        $transaction->time = $request->time;
+        $transaction->save();
+        return Response::jsonSuccessSimple(true, $transaction);
     }
 
     /**
