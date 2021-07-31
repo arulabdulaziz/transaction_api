@@ -1,15 +1,25 @@
 <template>
   <div>
-    <h1>Hello 11111 {{$store.state.test}}</h1>
+    <component :is="layout">
+      <router-view />
+    </component>
   </div>
 </template>
 
 <script>
+import HelloWorld from "./components/HelloWorld.vue";
 export default {
-
-}
+  components: {
+    HelloWorld,
+  },
+  computed: {
+    layout() {
+      if (this.$route.meta.layout === "full") return "layout-full";
+      return `layout-${this.contentLayoutType}`;
+    },
+  },
+};
 </script>
 
 <style>
-
 </style>
