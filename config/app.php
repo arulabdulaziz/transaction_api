@@ -14,7 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'mix_url' => env('MIX_ASSET_URL', 'localhost'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
