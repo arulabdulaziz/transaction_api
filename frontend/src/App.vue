@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Hello 11111</h1>
+    <h1>Hello 11111 {{$store.state.test}}</h1>
   </div>
 </template>
 
