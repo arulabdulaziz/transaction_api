@@ -1,1 +1,1 @@
-require("../../frontend/src/main")
+require("../../frontend/src/main.js")
