@@ -26,8 +26,7 @@ Route::group(
         Route::resource("/transaction", TransactionController::class);
     }
 );
+Route::post("/admin/login", [AdminController::class, "login"])->name('adminLogin');
 Route::group(['middleware' => ['auth:admin']], function () {
-    Route::get("/admin", function () {
-        return request()->user();
-    });
+    Route::post("admin/logout", [AdminController::class, "logout"]);
 });
