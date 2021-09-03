@@ -1,8 +1,0 @@
-coba install vue 3
-https://arter.dev/how-to-install-vue-3-in-laravel-8-from-scratch
-using router atau install vue cli
-https://www.vuemastery.com/blog/vue-router-a-tutorial-for-vue-3/
-vuex
-https://auth0.com/blog/state-management-in-vue-3-applications/
-laravel 8 and vue 3
-https://arter.dev/how-to-install-vue-3-in-laravel-8-from-scratch

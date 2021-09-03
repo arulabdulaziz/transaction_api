@@ -10,7 +10,7 @@ use App\Traits\Uuids;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
     // use HasFactory, Notifiable;
     use HasApiTokens, HasFactory, Notifiable;
@@ -34,6 +34,7 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
     // /**
     //  * The attributes that should be cast to native types.
     //  *

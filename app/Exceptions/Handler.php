@@ -2,6 +2,9 @@
 
 namespace App\Exceptions;
 
+use App\Helper\Response;
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -22,20 +25,52 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
-        'current_password',
         'password',
         'password_confirmation',
     ];
 
     /**
-     * Register the exception handling callbacks for the application.
+     * Report or log an exception.
      *
+     * @param  \Exception  $exception
      * @return void
      */
-    public function register()
+    public function report(Throwable $exception)
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
+        parent::report($exception);
+    }
+
+    /**
+     * Render an exception into an HTTP response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Exception  $exception
+     * @return \Illuminate\Http\Response
+     */
+    public function render($request, Throwable $exception)
+    {
+        return parent::render($request, $exception);
+    }
+
+    public function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            $result['message'] = "Please login to continue";
+            $result['messageId'] = "Silakan masuk untuk melanjutkan";
+            return Response::jsonErrorSimple(
+                Controller::UNAUTHORIZE,
+                Controller::USER_UNAUTHORIZE,
+                $result['message'],
+                $result['messageId']
+            );
+        }
+        $result['message'] = "Please login to continue";
+        $result['messageId'] = "Silakan masuk untuk melanjutkan";
+        return Response::jsonErrorSimple(
+            Controller::UNAUTHORIZE,
+            Controller::USER_UNAUTHORIZE,
+            $result['message'],
+            $result['messageId']
+        );
     }
 }

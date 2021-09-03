@@ -18,7 +18,21 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/home';
+    public function map()
+    {
+        $this->mapApiRoutes();
 
+        // $this->mapWebRoutes();
+
+        //
+    }
+    protected function mapApiRoutes()
+    {
+        Route::prefix('api')
+        ->middleware('api')
+        ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
+    }
     /**
      * The controller namespace for the application.
      *
@@ -39,12 +53,12 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::prefix('api')
-                ->middleware('api')
-                ->namespace($this->namespace)
+            ->middleware('api')
+            ->namespace($this->namespace) // need to add in Laravel 8
                 ->group(base_path('routes/api.php'));
 
             Route::middleware('web')
-                ->namespace($this->namespace)
+            ->namespace($this->namespace) // need to add in Laravel 8
                 ->group(base_path('routes/web.php'));
         });
     }
